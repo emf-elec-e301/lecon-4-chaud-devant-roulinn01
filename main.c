@@ -39,25 +39,7 @@
     CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
     OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
     SOFTWARE.
-*/
-
-#include "mcc_generated_files/mcc.h"
-#include "ultrason.h"
-
-/*
-                         Main application
- */
-void main(void)
-{
-    // initialize the device
-    SYSTEM_Initialize();
-
-    while (1)
-    {
-        /* 
-         * Ajouter votre code à partir de ce point
-         * 
-         * Les instructions d'attente suivantes sont disponibles:
+ * /* Les instructions d'attente suivantes sont disponibles:
          * - DELAY_milliseconds(xx); xx doit être un nombre entier positif
          * - DELAY_microseconds(xx); xx doit être un nombre entier positif
          * 
@@ -78,8 +60,51 @@ void main(void)
          */
         
 
+
+#include "mcc_generated_files/mcc.h"
+#include "ultrason.h"
+
+/*
+                         Main application
+ */
+void main(void)
+{
+    // initialize the device
+    SYSTEM_Initialize();
+    
+    double distance_us;
+    uint16_t distance_mm;
+    uint16_t i;
+        
+    while (1)
+    {
+        yeux_start_mesure();
+        distance_us = yeux_get_largeur_impulsion_us();
+        distance_mm = yeux_convertir_impulsion_vers_distance_mm(distance_us);
+        
+        if (distance_mm < 100)
+        { 
+            for (i=0 ; i<20 ; i++)
+            {
+                IO_BUZZER_SetHigh();
+                DELAY_microseconds(500);
+                IO_BUZZER_SetLow();
+                DELAY_microseconds(500); 
+                
+            }
+        }
+        else 
+        {   
+            for(i=0 ; i<20 ; i++)
+            {
+                IO_BUZZER_SetHigh();
+                DELAY_milliseconds(5);
+                IO_BUZZER_SetLow();
+                DELAY_milliseconds(5);
+            }    
+        }        
     }
-}
+}   
 /**
  End of File
 */
